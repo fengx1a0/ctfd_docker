@@ -1,0 +1,17 @@
+{
+  "name": "ctf_client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.0.0",
+    "koa2": "^2.0.0-alpha.7",
+    "md5": "^2.3.0"
+  }
+}
