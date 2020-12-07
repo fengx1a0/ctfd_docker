@@ -1,12 +1,12 @@
 {
-  "name": "ctf_client",
+  "name": "ctfd_docker",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "fengx1a0@2020",
   "license": "ISC",
   "devDependencies": {
     "koa-bodyparser": "^4.3.0",
