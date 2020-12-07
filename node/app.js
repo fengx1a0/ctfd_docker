@@ -111,13 +111,13 @@ router.post('/data', (ctx) => {
         	return new Promise((reslove,reject)=>{
         		exec("docker service rm " + contain_name, (err, stdout, stderr) => {
 		            if (err) {
-		                console.log(err);
+		                reject(err);
 		                return;
 		            } else if (stderr) {
-		                console.log(stderr);
+		                reject(stderr);
 		                return;
 		            } else {
-		                console.log(stdout);
+		                reslove(stdout);
 		            }
 	        	})
         	})
