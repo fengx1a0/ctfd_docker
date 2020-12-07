@@ -1,8 +1,3 @@
 {
-	"Welcome":"lastsward/wangshadiao_welcome",
-	"Cracked_In":"lastsward/wangshadiao_hash",
-	"EZ_blast":"lastsward/ez_blast",
-	"EZ_php":"lastsward/wangshadiao_yijuhua",
-	"EZ_upload":"lastsward/ez_upload2",
-	"JS福利题":"fengx1a0/justctf_js_mod"
+	"题目名":"docker镜像名"//请确保对应正确且集群全部拥有该镜像！
 }

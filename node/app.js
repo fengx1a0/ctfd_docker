@@ -1,25 +1,19 @@
 const koa = require('koa2');
 const router = require('koa-router')();
-const bodyParser = require('koa-bodyparser');;
+const bodyParser = require('koa-bodyparser');
 const md5 = require("md5");
 const fs = require("fs");
-const serverlist = {
-    "wing": "101.36.122.23",
-    "node7": "106.75.214.10",
-    "node6": "121.41.230.234",
-    "node3": "139.224.16.249",
-    "node2": "120.79.25.56",
-    "node5": "47.101.152.134"
-};
+
+const serverlist = JSON.parse(fs.readFileSync("server.json"));
+const list = JSON.parse(fs.readFileSync("data.json"));
 const tasklist = {};
 const taskinfo = {};
 const blacklist = [];
-var whitelist={};
+const whitelist={};
 var client_port_t = '';
 var client_ip_t = '';
-var text = fs.readFileSync("data.json");
-var list = JSON.parse(text);
-console.log(list);
+
+console.log("Ready!****************************\n" + list);
 
 var app = new koa();
 app.use(bodyParser());
@@ -83,6 +77,7 @@ router.post('/data', (ctx) => {
     }
     catch(e){
     	console.log(e);
+    	console.log("镜像名未找到，请检查是否data.JSON文件,确保题目名对应镜像名");
     	console.log("hacker !");
     	fs.appendFileSync("./hacker_blacklist.logs",
     		"time: " + new Date() + "\n" +
@@ -90,7 +85,7 @@ router.post('/data', (ctx) => {
 	        "GET: " + ctx.request.originalUrl + "\n" +
 	        "POST: " + JSON.stringify(ctx.request.body) + "\n" +
 	        "Header: " + JSON.stringify(ctx.request.headers) + "\n\n\n\n\n\n\n")
-    	blacklist.push(ip);
+    	// blacklist.push(ip); // 上线版本考虑开启
     	ctx.body = {
     		code: 404
     	}
@@ -110,6 +105,24 @@ router.post('/data', (ctx) => {
         if (taskinfo[contain_name] != undefined) {
             taskinfo[contain_name] = undefined;
         }
+
+        function pre_check()
+        {
+        	return new Promise((reslove,reject)=>{
+        		exec("docker service rm " + contain_name, (err, stdout, stderr) => {
+		            if (err) {
+		                console.log(err);
+		                return;
+		            } else if (stderr) {
+		                console.log(stderr);
+		                return;
+		            } else {
+		                console.log(stdout);
+		            }
+	        	})
+        	})
+        }
+
         function create_docker() {
             return new Promise((reslove, reject) => {
                 console.log(contian_task);
@@ -168,7 +181,11 @@ router.post('/data', (ctx) => {
         }
 
         
-        create_docker()
+        pre_check()
+        		.then((data)=>{
+        			console.log(data);
+        			return create_docker();
+        		})
                 .then((data)=>{
                     console.log(data);
                     return get_port();
@@ -239,6 +256,7 @@ router.post('/data', (ctx) => {
 
     else if (contian_opt == "destroy") {
     	try{
+    		clearTimeout(tasklist[contain_name]);
 	    	let exec2 = require("child_process").exec;
 	        exec2("docker service rm " + contain_name, (err, stdout, stderr) => {
 	            if (err) {
@@ -263,7 +281,7 @@ router.post('/data', (ctx) => {
 		        "GET: " + ctx.request.originalUrl + "\n" +
 		        "POST: " + JSON.stringify(ctx.request.body) + "\n" +
 		        "Header: " + JSON.stringify(ctx.request.headers) + "\n\n\n\n\n\n\n");
-	    	// blacklist.push(ip);
+	    	// blacklist.push(ip); //酌情开启，避免误杀
 	    	ctx.body = {
 	    		code: 404
 	    	}
@@ -276,8 +294,8 @@ router.post('/data', (ctx) => {
     	try{
 	    	clearTimeout(tasklist[contain_name]);
 	        tasklist[contain_name] = setTimeout(() => {
-            let exec = require("child_process").exec;
-            exec("docker service rm " + contain_name, (err, stdout, stderr) => {
+	            let exec = require("child_process").exec;
+	            exec("docker service rm " + contain_name, (err, stdout, stderr) => {
                     if (err) {
                         console.log(err);
                         return;
@@ -323,4 +341,4 @@ router.post('/data', (ctx) => {
 
 
 app.use(router.routes());
-app.listen(23333);
+app.listen(23333); //可以更换此端口，但是前台view.js所有的都要换
