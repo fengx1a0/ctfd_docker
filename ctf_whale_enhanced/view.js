@@ -21,18 +21,25 @@ function loadInfo() {
     fw = {};
     if(typeof(fw.data) == "undefined" || !fw.data.ip)
         {
-                $.ajax({
-                        url: "http://106.75.214.10:23333/data",
-                        data: {
-                            'task_name': $(".challenge-name").text(),
-                            'option': 'get_info'
-                        },
-                        type: "POST",
-                        dataType: "json",
-                        success: function(data) {
-                        fw.data = data.data;
-                }
+            $.ajax({
+                    url: "http://106.75.214.10:23333/data",
+                    data: {
+                        'task_name': $(".challenge-name").text(),
+                        'option': 'get_info'
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function(data) {
+                    fw.data = data.data;
+            	}
             });
+
+            if(fw.data.port == "A few minutes")
+            {
+                setTimeout(()=>{
+                    location.reload();
+                },10000)
+            }
         }
 
     CTFd.fetch(url, {
@@ -90,16 +97,6 @@ function loadInfo() {
                             fw.data = data.data;
                             setTimeout(()=>{
                                 location.reload();
-                                if(fw.data.port == "A few minutes")
-                                {
-                                    setTimeout(()=>{
-                                        location.reload();
-                                        if(fw.data.port == "A few minutes")
-                                        {
-                                            location.reload();
-                                        }
-                                    },15000)
-                                }
                             },15000)
                         }
                     });
@@ -144,6 +141,7 @@ function loadInfo() {
                         }
                     });
                 });
+                
                 $("#whale-button-destroy").on("click",function(){
                     $.ajax({
                         url: "http://106.75.214.10:23333/data",

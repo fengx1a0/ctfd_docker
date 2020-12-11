@@ -39,6 +39,10 @@
 git clone https://github.com/fengx1a0/ctfd_docker.git
 cd ctfd_docker
 
+# vim ctf_whale_enhanced/view.js
+# 替换掉所有· http://106.75.214.10:23333/data · 为你自己主机的ip和port(默认23333)
+http://ip:port/data
+
 # 将view.js替换掉ctfd_whale里的view.js
 cd
 rm -f ~/CTFd/CTFd/plugins/ctfd-whale/assets/view.js
@@ -50,7 +54,7 @@ cd node
 cnpm install -i
 
 # 启动服务
-node app.js # 默认端口23333 ， 如需更改，请自行配置view.js 和 app.js
+node app.js # 默认端口23333 ， 如需更改，请自行配置view.js 和 app.js(最后一行)
 ```
 
 
